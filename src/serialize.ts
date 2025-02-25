@@ -21,12 +21,23 @@ export function serialize(input: any): string {
 
 const Serializer = /*@__PURE__*/ (function () {
   class Serializer {
-    serialized = "";
+    #serialized = "";
+    #buffer = "";
 
     #context = new Map();
 
     write(str: string) {
-      this.serialized += str;
+      this.#buffer += str;
+    }
+
+    commit() {
+      this.#serialized += this.#buffer;
+      this.#buffer = "";
+    }
+
+    get serialized() {
+      this.commit();
+      return this.#serialized;
     }
 
     dispatch(value: any): string | void {
@@ -85,13 +96,15 @@ const Serializer = /*@__PURE__*/ (function () {
         objType = objString.slice(8, objectLength - 1);
       }
 
-      let objectNumber = null;
+      let objectContent = null;
 
-      if ((objectNumber = this.#context.get(object)) === undefined) {
-        this.#context.set(object, this.#context.size);
+      if ((objectContent = this.#context.get(object)) === undefined) {
+        this.#context.set(object, `#${this.#context.size}`);
       } else {
-        return this.write(`#${objectNumber}`);
+        return this.write(objectContent);
       }
+
+      this.commit();
 
       if (
         objType !== "Object" &&
@@ -101,7 +114,7 @@ const Serializer = /*@__PURE__*/ (function () {
         // @ts-expect-error
         const handler = this["$" + objType];
         if (handler) {
-          handler.call(this, object);
+          return handler.call(this, object);
         } else {
           if (typeof object?.entries === "function") {
             return this.objectEntries(objType, object.entries());
@@ -117,8 +130,10 @@ const Serializer = /*@__PURE__*/ (function () {
           }
           return this.$object(object.toJSON());
         }
-        return this.objectEntries(objectName, Object.entries(object));
+        this.objectEntries(objectName, Object.entries(object));
       }
+
+      this.#context.set(object, this.#buffer);
     }
 
     $function(fn: any) {
