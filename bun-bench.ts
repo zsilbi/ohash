@@ -1,6 +1,7 @@
 import { bench, group, run, summary } from "mitata";
 import { objectHash } from "./src/object-hash";
 import { serialize } from "./src/serialize";
+import { serializeV2 } from "./src/serialize-v2";
 
 group("serialize", () => {
   // Options for v1
@@ -18,6 +19,10 @@ group("serialize", () => {
     summary(() => {
       bench("ohash v1.1.5", () => {
         objectHash(object, hashOptions);
+      });
+
+      bench("ohash v2.0.4", () => {
+        serializeV2(object);
       });
 
       bench("ohash v2.0.10", () => {
@@ -40,6 +45,10 @@ group("serialize", () => {
     summary(() => {
       bench("ohash v1.1.5", () => {
         objectHash(object, hashOptions);
+      });
+
+      bench("ohash v2.0.4", () => {
+        serializeV2(object);
       });
 
       bench("ohash v2.0.10", () => {
@@ -66,6 +75,10 @@ group("serialize", () => {
     summary(() => {
       bench("ohash v1.1.5", () => {
         objectHash(array, hashOptions);
+      });
+
+      bench("ohash v2.0.4", () => {
+        serializeV2(object);
       });
 
       bench("ohash v2.0.10", () => {
@@ -97,6 +110,10 @@ group("serialize", () => {
         objectHash(object, hashOptions);
       });
 
+      bench("ohash v2.0.4", () => {
+        serializeV2(object);
+      });
+
       bench("ohash v2.0.10", () => {
         serialize(object);
       });
@@ -115,6 +132,10 @@ group("serialize", () => {
     summary(() => {
       bench("ohash v1.1.5", () => {
         objectHash(object, hashOptions);
+      });
+
+      bench("ohash v2.0.4", () => {
+        serializeV2(object);
       });
 
       bench("ohash v2.0.10", () => {
@@ -144,6 +165,10 @@ group("serialize", () => {
     summary(() => {
       bench("ohash v1.1.5", () => {
         objectHash(object, hashOptions);
+      });
+
+      bench("ohash v2.0.4", () => {
+        serializeV2(object);
       });
 
       bench("ohash v2.0.10", () => {
@@ -190,6 +215,10 @@ group("serialize", () => {
     summary(() => {
       bench("ohash v1.1.5", () => {
         objectHash(object, hashOptions);
+      });
+
+      bench("ohash v2.0.4", () => {
+        serializeV2(object);
       });
 
       bench("ohash v2.0.10", () => {
