@@ -4,7 +4,7 @@ import { serialize } from "../src";
 import { objectHash } from "../src/object-hash";
 
 describe("benchmarks", () => {
-  describe.only("serialize", () => {
+  describe.only("v1 vs. v2", () => {
     // Options for v1
     const hashOptions = { unorderedArrays: true, unorderedSets: true };
 
