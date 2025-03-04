@@ -57,6 +57,36 @@ group("serialize", () => {
     });
   });
 
+  group("array of 100 simple objects", () => {
+    const object = {
+      string: "test",
+      number: 42,
+      boolean: true,
+      nullValue: null,
+      undefinedValue: undefined,
+    };
+
+    const array: any[] = [];
+
+    for (let i = 0; i < 100; i++) {
+      array.push({ ...object });
+    }
+
+    summary(() => {
+      bench("ohash v1.1.5", () => {
+        objectHash(array, hashOptions);
+      });
+
+      bench("ohash v2.0.4", () => {
+        serializeV2(array);
+      });
+
+      bench("ohash v2.0.10", () => {
+        serialize(array);
+      });
+    });
+  });
+
   group("array of 100 simple objects (by reference)", () => {
     const object = {
       string: "test",
@@ -78,7 +108,7 @@ group("serialize", () => {
       });
 
       bench("ohash v2.0.4", () => {
-        serializeV2(object);
+        serializeV2(array);
       });
 
       bench("ohash v2.0.10", () => {
