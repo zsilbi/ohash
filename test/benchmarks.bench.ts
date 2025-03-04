@@ -6,41 +6,22 @@ import { objectHash } from "../src/object-hash";
 const hashOptions = { unorderedArrays: true, unorderedSets: true };
 
 const versions = {
-  // "ohash v2.0.4": await import("../src/bench/serialize-v2.0.4"),
-  // "ohash v2.0.5": await import("../src/bench/serialize-v2.0.5"),
-  // "ohash v2.0.6": await import("../src/bench/serialize-v2.0.6"),
-  // "ohash v2.0.7": await import("../src/bench/serialize-v2.0.7"),
-  // "ohash v2.0.8": await import("../src/bench/serialize-v2.0.8"),
-  // "ohash v2.0.9": await import("../src/bench/serialize-v2.0.9"),
+  "ohash v2.0.0": await import("../src/bench/serialize-v2.0.0"),
+  "ohash v2.0.1": await import("../src/bench/serialize-v2.0.1"),
+  "ohash v2.0.2": await import("../src/bench/serialize-v2.0.2"),
+  "ohash v2.0.3": await import("../src/bench/serialize-v2.0.3"),
+  "ohash v2.0.4": await import("../src/bench/serialize-v2.0.4"),
+  "ohash v2.0.5": await import("../src/bench/serialize-v2.0.5"),
+  "ohash v2.0.6": await import("../src/bench/serialize-v2.0.6"),
+  "ohash v2.0.7": await import("../src/bench/serialize-v2.0.7"),
+  "ohash v2.0.8": await import("../src/bench/serialize-v2.0.8"),
+  "ohash v2.0.9": await import("../src/bench/serialize-v2.0.9"),
   "ohash v2.0.10": await import("../src/bench/serialize-v2.0.10"),
   "ohash @ current": await import("../src/serialize"),
+  "ohash @ next": await import("../src/bench/serialize-v2.0.11"),
 };
 
 describe("benchmarks", () => {
-  describe("array", () => {
-    const cases: any = [Object.entries({}), new Map().entries()];
-
-    bench("Array.isArray() before Array.from()", () => {
-      for (const entries of cases) {
-        const entriesArray = Array.isArray(entries)
-          ? entries
-          : Array.from(entries);
-
-        entriesArray.push("");
-      }
-    });
-
-    bench("Array.from() directly", () => {
-      for (const entries of cases) {
-        const entriesArray = Array.from(entries);
-
-        entriesArray.push("");
-      }
-    });
-  });
-
-  return;
-
   describe.only("v1 vs. v2", () => {
     describe("simple object", () => {
       const object = {
