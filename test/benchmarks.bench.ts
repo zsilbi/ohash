@@ -1,14 +1,47 @@
 import { bench, describe } from "vitest";
 
-import { serialize } from "../src";
 import { objectHash } from "../src/object-hash";
-import { serializeV2 } from "../src/serialize-v2";
+
+// Options for v1
+const hashOptions = { unorderedArrays: true, unorderedSets: true };
+
+const versions = {
+  // "ohash v2.0.4": await import("../src/bench/serialize-v2.0.4"),
+  // "ohash v2.0.5": await import("../src/bench/serialize-v2.0.5"),
+  // "ohash v2.0.6": await import("../src/bench/serialize-v2.0.6"),
+  // "ohash v2.0.7": await import("../src/bench/serialize-v2.0.7"),
+  // "ohash v2.0.8": await import("../src/bench/serialize-v2.0.8"),
+  // "ohash v2.0.9": await import("../src/bench/serialize-v2.0.9"),
+  "ohash v2.0.10": await import("../src/bench/serialize-v2.0.10"),
+  "ohash @ current": await import("../src/serialize"),
+};
 
 describe("benchmarks", () => {
-  describe.only("v1 vs. v2", () => {
-    // Options for v1
-    const hashOptions = { unorderedArrays: true, unorderedSets: true };
+  describe("array", () => {
+    const cases: any = [Object.entries({}), new Map().entries()];
 
+    bench("Array.isArray() before Array.from()", () => {
+      for (const entries of cases) {
+        const entriesArray = Array.isArray(entries)
+          ? entries
+          : Array.from(entries);
+
+        entriesArray.push("");
+      }
+    });
+
+    bench("Array.from() directly", () => {
+      for (const entries of cases) {
+        const entriesArray = Array.from(entries);
+
+        entriesArray.push("");
+      }
+    });
+  });
+
+  return;
+
+  describe.only("v1 vs. v2", () => {
     describe("simple object", () => {
       const object = {
         string: "test",
@@ -22,13 +55,11 @@ describe("benchmarks", () => {
         objectHash(object, hashOptions);
       });
 
-      bench("ohash v2.0.4", () => {
-        serializeV2(object);
-      });
-
-      bench("ohash v2.0.10", () => {
-        serialize(object);
-      });
+      for (const [name, version] of Object.entries(versions)) {
+        bench(name, () => {
+          version.serialize(object);
+        });
+      }
     });
 
     describe("circular object", () => {
@@ -46,13 +77,11 @@ describe("benchmarks", () => {
         objectHash(object, hashOptions);
       });
 
-      bench("ohash v2.0.4", () => {
-        serializeV2(object);
-      });
-
-      bench("ohash v2.0.10", () => {
-        serialize(object);
-      });
+      for (const [name, version] of Object.entries(versions)) {
+        bench(name, () => {
+          version.serialize(object);
+        });
+      }
     });
 
     describe("array of 100 simple objects", () => {
@@ -74,13 +103,11 @@ describe("benchmarks", () => {
         objectHash(array, hashOptions);
       });
 
-      bench("ohash v2.0.4", () => {
-        serializeV2(array);
-      });
-
-      bench("ohash v2.0.10", () => {
-        serialize(array);
-      });
+      for (const [name, version] of Object.entries(versions)) {
+        bench(name, () => {
+          version.serialize(object);
+        });
+      }
     });
 
     describe("array of 100 simple objects (by reference)", () => {
@@ -102,13 +129,11 @@ describe("benchmarks", () => {
         objectHash(array, hashOptions);
       });
 
-      bench("ohash v2.0.4", () => {
-        serializeV2(array);
-      });
-
-      bench("ohash v2.0.10", () => {
-        serialize(array);
-      });
+      for (const [name, version] of Object.entries(versions)) {
+        bench(name, () => {
+          version.serialize(object);
+        });
+      }
     });
 
     describe("complex object", () => {
@@ -133,13 +158,11 @@ describe("benchmarks", () => {
         objectHash(object, hashOptions);
       });
 
-      bench("ohash v2.0.4", () => {
-        serializeV2(object);
-      });
-
-      bench("ohash v2.0.10", () => {
-        serialize(object);
-      });
+      for (const [name, version] of Object.entries(versions)) {
+        bench(name, () => {
+          version.serialize(object);
+        });
+      }
     });
 
     describe("dates", () => {
@@ -155,13 +178,11 @@ describe("benchmarks", () => {
         objectHash(object, hashOptions);
       });
 
-      bench("ohash v2.0.4", () => {
-        serializeV2(object);
-      });
-
-      bench("ohash v2.0.10", () => {
-        serialize(object);
-      });
+      for (const [name, version] of Object.entries(versions)) {
+        bench(name, () => {
+          version.serialize(object);
+        });
+      }
     });
 
     describe("typed arrays and buffer", () => {
@@ -186,13 +207,11 @@ describe("benchmarks", () => {
         objectHash(object, hashOptions);
       });
 
-      bench("ohash v2.0.4", () => {
-        serializeV2(object);
-      });
-
-      bench("ohash v2.0.10", () => {
-        serialize(object);
-      });
+      for (const [name, version] of Object.entries(versions)) {
+        bench(name, () => {
+          version.serialize(object);
+        });
+      }
     });
 
     describe("classes/functions/nested objects", () => {
@@ -234,13 +253,11 @@ describe("benchmarks", () => {
         objectHash(object, hashOptions);
       });
 
-      bench("ohash v2.0.4", () => {
-        serializeV2(object);
-      });
-
-      bench("ohash v2.0.10", () => {
-        serialize(object);
-      });
+      for (const [name, version] of Object.entries(versions)) {
+        bench(name, () => {
+          version.serialize(object);
+        });
+      }
     });
   });
 
@@ -300,15 +317,14 @@ describe("benchmarks", () => {
 
       describe(title, () => {
         bench("ohash v1.1.5", () => {
-          objectHash(objects, {
-            unorderedArrays: true,
-            unorderedSets: true,
-          });
+          objectHash(objects, hashOptions);
         });
 
-        bench("ohash v2.0.10", () => {
-          serialize(objects);
-        });
+        for (const [name, version] of Object.entries(versions)) {
+          bench(name, () => {
+            version.serialize(objects);
+          });
+        }
       });
     }
   });
