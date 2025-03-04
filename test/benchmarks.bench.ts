@@ -22,7 +22,7 @@ const versions = {
 };
 
 describe("benchmarks", () => {
-  describe.only("v1 vs. v2", () => {
+  describe("v1 vs. v2", () => {
     describe("simple object", () => {
       const object = {
         string: "test",
@@ -242,52 +242,52 @@ describe("benchmarks", () => {
     });
   });
 
-  describe("serialize", () => {
+  describe.only("serialize", () => {
     const presets: BenchObjectPreset[] = [
       { count: 1, size: "small" },
-      { count: 1, size: "small", circular: true },
-      { count: 1, size: "large" },
-      { count: 1, size: "large", circular: true },
-      {
-        count: 1024,
-        size: "small",
-        referenced: true,
-      },
-      {
-        count: 1024,
-        size: "small",
-        circular: true,
-        referenced: true,
-      },
-      {
-        count: 512,
-        size: "large",
-        referenced: true,
-      },
-      {
-        count: 512,
-        size: "large",
-        circular: true,
-        referenced: true,
-      },
-      {
-        count: 256,
-        size: "small",
-      },
+      // { count: 1, size: "small", circular: true },
+      // { count: 1, size: "large" },
+      // { count: 1, size: "large", circular: true },
+      // {
+      //   count: 1024,
+      //   size: "small",
+      //   referenced: true,
+      // },
+      // {
+      //   count: 1024,
+      //   size: "small",
+      //   circular: true,
+      //   referenced: true,
+      // },
+      // {
+      //   count: 512,
+      //   size: "large",
+      //   referenced: true,
+      // },
+      // {
+      //   count: 512,
+      //   size: "large",
+      //   circular: true,
+      //   referenced: true,
+      // },
       {
         count: 256,
         size: "small",
-        circular: true,
       },
-      {
-        count: 128,
-        size: "large",
-      },
-      {
-        count: 128,
-        size: "large",
-        circular: true,
-      },
+      // {
+      //   count: 256,
+      //   size: "small",
+      //   circular: true,
+      // },
+      // {
+      //   count: 128,
+      //   size: "large",
+      // },
+      // {
+      //   count: 128,
+      //   size: "large",
+      //   circular: true,
+      // },
     ];
 
     for (const preset of presets) {
@@ -297,9 +297,9 @@ describe("benchmarks", () => {
       const objects = createBenchObjects(preset);
 
       describe(title, () => {
-        bench("ohash v1.1.5", () => {
-          objectHash(objects, hashOptions);
-        });
+        // bench("ohash v1.1.5", () => {
+        //   objectHash(objects, hashOptions);
+        // });
 
         for (const [name, version] of Object.entries(versions)) {
           bench(name, () => {
