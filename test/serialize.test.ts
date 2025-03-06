@@ -98,7 +98,7 @@ describe("serialize", () => {
       map.set({ x: 42 }, "3");
 
       expect(serialize(map)).toMatchInlineSnapshot(
-        `"Map{1:4,2:3,a:'1',z:2,{x:42}:'3'}"`,
+        `"Map{1:4,2:3,{x:42}:'3',a:'1',z:2}"`,
       );
     });
   });
@@ -287,9 +287,11 @@ describe("serialize", () => {
       function sum(a: number, b: number) {
         return a + b;
       }
-      expect(serialize(sum)).toMatchInlineSnapshot(
-        `"sum(2)function sum(a, b) {return a + b;}"`,
-      );
+      expect(serialize(sum)).toMatchInlineSnapshot(`
+        "sum(2)function sum(a, b) {
+                return a + b;
+              }"
+      `);
     });
 
     it("arrow function", () => {
@@ -399,7 +401,7 @@ describe("serialize", () => {
       obj.b.add(obj.a);
 
       expect(serialize(obj)).toMatchInlineSnapshot(
-        `"{a:Set[#1,1],b:Set[#1,1]}"`,
+        `"{a:Set[1,#1],b:Set[1,#1]}"`,
       );
     });
 
