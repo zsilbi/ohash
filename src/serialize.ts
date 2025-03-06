@@ -42,12 +42,16 @@ const Serializer = /*@__PURE__*/ (function () {
       const typeA = typeof a;
       const typeB = typeof b;
 
-      if (typeA === "string" && typeB === "string") {
+      if (typeA !== typeB) {
+        return typeA < typeB ? -1 : 1;
+      }
+
+      if (typeA === "string") {
         return a < b ? -1 : 1;
       }
 
-      if (typeA === "number" && typeB === "number") {
-        return a - b;
+      if (typeA === "number") {
+        return a < b ? -1 : 1;
       }
 
       return this.serialize(a, true) < this.serialize(b, true) ? -1 : 1;
