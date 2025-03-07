@@ -331,38 +331,38 @@ describe("serialize", () => {
     it("handles simple circular reference", () => {
       const obj: any = {};
       obj.foo = obj;
-      expect(serialize(obj)).toMatchInlineSnapshot(`"{foo:#0}"`);
+      expect(serialize(obj)).toMatchInlineSnapshot(`"{foo:~#0}"`);
     });
 
     it("handles circular references in nested objects", () => {
       const obj: any = { a: { b: {} } };
       obj.a.b = obj;
-      expect(serialize(obj)).toMatchInlineSnapshot(`"{a:{b:#0}}"`);
+      expect(serialize(obj)).toMatchInlineSnapshot(`"{a:{b:~#0}}"`);
     });
 
     it("handles circular references in arrays", () => {
       const arr: any[] = [];
       arr.push(arr);
-      expect(serialize(arr)).toMatchInlineSnapshot(`"[#0]"`);
+      expect(serialize(arr)).toMatchInlineSnapshot(`"[~#0]"`);
     });
 
     it("handles deep circular references", () => {
       const obj: any = { a: { b: { c: {} } } };
       obj.a.b.c = obj.a;
-      expect(serialize(obj)).toMatchInlineSnapshot(`"{a:{b:{c:#1}}}"`);
+      expect(serialize(obj)).toMatchInlineSnapshot(`"{a:{b:{c:~/a#1}}}"`);
     });
 
     it("handles mixed object and array references", () => {
       const obj: any = { a: [] };
       obj.a.push(obj);
-      expect(serialize(obj)).toMatchInlineSnapshot(`"{a:[#0]}"`);
+      expect(serialize(obj)).toMatchInlineSnapshot(`"{a:[~#0]}"`);
     });
 
     it("handles self-referencing objects with multiple keys", () => {
       const obj: any = { a: {}, b: {} };
       obj.a.ref = obj;
       obj.b.ref = obj;
-      expect(serialize(obj)).toMatchInlineSnapshot(`"{a:{ref:#0},b:{ref:#0}}"`);
+      expect(serialize(obj)).toMatchInlineSnapshot(`"{a:{ref:~#0},b:{ref:~#0}}"`);
     });
 
     it("handles circular references with symbols as keys", () => {
@@ -375,19 +375,19 @@ describe("serialize", () => {
     it("handles circular references within Map objects", () => {
       const map = new Map();
       map.set("key", map);
-      expect(serialize(map)).toMatchInlineSnapshot(`"Map{key:#0}"`);
+      expect(serialize(map)).toMatchInlineSnapshot(`"Map{key:~#0}"`);
     });
 
     it("handles circular references within keys of Map objects", () => {
       const map = new Map();
       map.set(map, "value");
-      expect(serialize(map)).toMatchInlineSnapshot(`"Map{#0:'value'}"`);
+      expect(serialize(map)).toMatchInlineSnapshot(`"Map{~#0:'value'}"`);
     });
 
     it("handles circular references within Set objects", () => {
       const set = new Set();
       set.add(set);
-      expect(serialize(set)).toMatchInlineSnapshot(`"Set[#0]"`);
+      expect(serialize(set)).toMatchInlineSnapshot(`"Set[~#0]"`);
 
       const obj = {
         a: {},
@@ -399,7 +399,7 @@ describe("serialize", () => {
       obj.b.add(obj.a);
 
       expect(serialize(obj)).toMatchInlineSnapshot(
-        `"{a:Set[#1,1],b:Set[#1,1]}"`,
+        `"{a:Set[~/a#1,1],b:Set[~/a#1,1]}"`,
       );
     });
 
@@ -408,7 +408,7 @@ describe("serialize", () => {
       obj.a.ref = obj.b;
       obj.b.ref = obj.a;
       expect(serialize(obj)).toMatchInlineSnapshot(
-        `"{a:{name:'A',ref:{name:'B',ref:#1}},b:{name:'B',ref:#1}}"`,
+        `"{a:{name:'A',ref:{name:'B',ref:~/a#1}},b:{name:'B',ref:~/a#1}}"`,
       );
     });
 
@@ -417,7 +417,7 @@ describe("serialize", () => {
       obj.x.y.z.ref1 = obj.x;
       obj.x.y.z.ref2 = obj;
       expect(serialize(obj)).toMatchInlineSnapshot(
-        `"{x:{y:{z:{ref1:#1,ref2:#0}}}}"`,
+        `"{x:{y:{z:{ref1:~/x#1,ref2:~#0}}}}"`,
       );
     });
   });
@@ -436,7 +436,9 @@ describe("serialize", () => {
       const a = { _: 1, b: { _: 2, c: { _: 3 } } };
       const refs = { a: a, b: a };
 
-      expect(serialize(refs)).toMatchInlineSnapshot(`"${serialize(simple)}"`);
+      expect(serialize(refs)).toMatchInlineSnapshot(
+        `"{a:{_:1,b:{_:2,c:{_:3}}},b:{_:1,b:{_:2,c:{_:3}}}}"`,
+      );
     });
   });
 });
